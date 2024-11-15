@@ -2,7 +2,8 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+import pickle
+
 
 # Load the iris dataset
 iris = load_iris()
@@ -19,9 +20,10 @@ X_test = scaler.transform(X_test)
 # Create and train the logistic regression model
 model = LogisticRegression(max_iter=200)
 model.fit(X_train, y_train)
+model.predict(X_test)
 
-# Make predictions and evaluate the model
-y_pred = model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
+# Save the model to disk
+model_pkl_file = "iris_classifier_model.pkl"  
 
-print(f"Model accuracy: {accuracy:.2f}")
+with open(model_pkl_file, 'wb') as file:  
+    pickle.dump(model, file)

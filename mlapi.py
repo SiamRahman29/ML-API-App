@@ -6,17 +6,25 @@ import pandas
 app = FastAPI()
 
 class ScoringItem(BaseModel):
-    YearsAtCompany: float
-    EmployeeSatisfaction: float 
-    Position: str
-    Salary: int
+    SepalLengthCm: float
+    SepalWidthCm: float
+    PetalLengthCm: float
+    PetalWidthCm: float
 
-with open('rf_model.pkl', 'rb') as file:
+with open('iris_classifier_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 
 @app.post('/')
 async def scoring_endpoint(item: ScoringItem):
-    df = pandas.DataFrame([item.values()])
+    df = pandas.DataFrame([item.dict().values()])
     yhat = model.predict(df)
-    return {"prediction": int(yhat)}
+    result = ""
+    if yhat == 0:
+        result = "Iris-setosa"
+    elif yhat == 1:
+        result = "Iris-versicolor"
+    else:
+        result = "Iris-virginica"
+
+    return {"prediction": result}
